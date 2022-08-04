@@ -1,5 +1,5 @@
 ### Go-ProcNet
-A go parser for linux socket files, supporting:
+A go module for parsing linux socket files, supporting:
 - /proc/net/tcp
 - /proc/net/tcp6
 - /proc/net/udp
@@ -15,7 +15,7 @@ Based on the source code of https://github.com/cakturk/go-netstat
 $ go get github.com/amit7itz/go-procnet
 ```
 
-
+### Usage:
 ```go
 package main
 
