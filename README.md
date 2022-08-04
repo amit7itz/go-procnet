@@ -5,7 +5,7 @@ A go parser for linux socket files, supporting:
 - /proc/net/udp
 - /proc/net/udp6
 
-Can also be used for socket files of a specific process under /proc/<PID>/net/
+Can also be used for socket files of a specific process under `/proc/<PID>/net/`
 
 Based on the source code of https://github.com/cakturk/go-netstat
 
