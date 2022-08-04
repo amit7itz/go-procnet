@@ -1,78 +1,48 @@
-### Usage:
+### Go-ProcNet
+A go parser for linux socket files, supporting:
+- /proc/net/tcp
+- /proc/net/tcp6
+- /proc/net/udp
+- /proc/net/udp6
 
-```
-Usage of ./go-netstat:
-  -4    display only IPv4 sockets
-  -6    display only IPv6 sockets
-  -all
-    	display both listening and non-listening sockets
-  -help
-    	display this help screen
-  -lis
-    	display only listening sockets
-  -res
-        lookup symbolic names for host addresses
-  -tcp
-    	display TCP sockets
-  -udp
-    	display UDP sockets
-```
+Can also be used for socket files of a specific process under /proc/<PID>/net/
+
+Based on the source code of https://github.com/cakturk/go-netstat
+
 ### Installation:
 
 ```
-$ go get github.com/cakturk/go-netstat
+$ go get github.com/amit7itz/go-procnet
 ```
 
-### Using as a library
-#### [Godoc](https://godoc.org/github.com/cakturk/go-netstat/netstat)
-#### Getting the package
-```
-$ go get github.com/cakturk/go-netstat/netstat
-```
 
 ```go
+package main
+
 import (
 	"fmt"
-
-	"github.com/cakturk/go-netstat/netstat"
+	"github.com/amit7itz/go-procnet/procnet"
 )
 
-func displaySocks() error {
-	// UDP sockets
-	socks, err := netstat.UDPSocks(netstat.NoopFilter)
+func main() {
+	// parsing the tcp sockets from /proc/net/tcp
+	socks, err := procnet.TCPSocks()
 	if err != nil {
-		return err
+		panic(err)
 	}
-	for _, e := range socks {
-		fmt.Printf("%v\n", e)
-	}
-
-	// TCP sockets
-	socks, err = netstat.TCPSocks(netstat.NoopFilter)
-	if err != nil {
-		return err
-	}
-	for _, e := range socks {
-		fmt.Printf("%v\n", e)
+	for _, sock := range socks {
+		fmt.Printf("local ip: %s local port: %d remote IP: %s remote port: %d state: %s",
+			sock.LocalAddr.IP, sock.LocalAddr.Port, sock.RemoteAddr.IP, sock.RemoteAddr.Port, sock.State)
 	}
 
-	// get only listening TCP sockets
-	tabs, err := netstat.TCPSocks(func(s *netstat.SockTabEntry) bool {
-		return s.State == netstat.Listen
-	})
-	if err != nil {
-		return err
-	}
-	for _, e := range tabs {
-		fmt.Printf("%v\n", e)
-	}
+	// for parsing the sockets from a custom path
+	socks, err = procnet.SocksFromPath("/proc/1234/net/udp")
+	// ...
 
-	// list all the TCP sockets in state FIN_WAIT_1 for your HTTP server
-	tabs, err = netstat.TCPSocks(func(s *netstat.SockTabEntry) bool {
-		return s.State == netstat.FinWait1 && s.LocalAddr.Port == 80
-	})
-	// error handling, etc.
-
-	return nil
+	// for parsing the sockets from the textual content of a socket file
+	socks, err = procnet.SocksFromText(` sl  local_address                         remote_address                        st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+	0: 00000000000000000000000000000000:1B58 00000000000000000000000000000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 854815644 1 0000000000000000 100 0 0 10 0
+	1: 0000000000000000FFFF0000860EA8C0:1B58 0000000000000000FFFF0000E70FA8C0:87F6 01 00000000:00000000 00:00000000 00000000     0        0 854824433 1 0000000000000000 20 4 1 10 -1`)
+	// ...
 }
 ```
