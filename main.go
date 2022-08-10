@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/amit7itz/go-procnet/procnet"
+	"github.com/otterize/go-procnet/procnet"
 )
 
 func main() {

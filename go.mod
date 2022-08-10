@@ -1,4 +1,4 @@
-module github.com/amit7itz/go-procnet
+module github.com/otterize/go-procnet
 
 go 1.13
 

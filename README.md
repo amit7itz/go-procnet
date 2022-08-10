@@ -12,7 +12,7 @@ Based on the source code of https://github.com/cakturk/go-netstat
 ### Installation:
 
 ```
-$ go get github.com/amit7itz/go-procnet
+$ go get github.com/otterize/go-procnet
 ```
 
 ### Usage:
@@ -21,7 +21,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/amit7itz/go-procnet/procnet"
+	"github.com/otterize/go-procnet/procnet"
 )
 
 func main() {
